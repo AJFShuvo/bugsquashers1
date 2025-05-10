@@ -14,8 +14,6 @@ import {
 } from "../ui/dropdown-menu";
 import {
   User,
-  Settings,
-  Package,
   LogOut,
   ShoppingCart,
   Brain,
@@ -56,13 +54,16 @@ const DesktopNavigation = ({
     setQuery("");
 
     try {
-      const response = await fetch("https://bugsquashers-ai-agent.onrender.com/api/query", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
+      const response = await fetch(
+        "https://bugsquashers-ai-agent.onrender.com/api/query",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query }),
+        }
+      );
 
       // Check for HTTP errors (4xx/5xx responses)
       if (!response.ok) {
@@ -166,7 +167,13 @@ const DesktopNavigation = ({
       <Button
         variant="outline"
         aria-label="AI"
-        onClick={() => navigate("/recommendation")}
+        onClick={() => {
+          if (userData?.role === "User") {
+            navigate("/recommendation");
+          } else {
+            navigate("/airedirect");
+          }
+        }}
       >
         Ai recommendations
         <Brain className="h-6 w-6" />
@@ -245,20 +252,7 @@ const DesktopNavigation = ({
               <User className="h-4 w-4" />
               <span>{loading ? "Loading..." : "Dashboard"}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/profile")}
-              className="flex items-center space-x-2 p-2 hover:bg-accent rounded-md"
-            >
-              <Settings className="h-4 w-4" />
-              <span>Profile Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/orders")}
-              className="flex items-center space-x-2 p-2 hover:bg-accent rounded-md"
-            >
-              <Package className="h-4 w-4" />
-              <span>My Orders</span>
-            </DropdownMenuItem>
+            
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuItem
               onClick={handleLogout}
@@ -285,7 +279,7 @@ DesktopNavigation.propTypes = {
   handleLogout: PropTypes.func.isRequired,
   handleDashboardClick: PropTypes.func.isRequired,
   handleMarketClick: PropTypes.func.isRequired,
-  handleHomeaClick: PropTypes.func.isRequired,
+  handleHomeClick: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 
